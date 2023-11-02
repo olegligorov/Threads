@@ -7,7 +7,7 @@ import Image from "next/image";
 import { profileTabs } from "@/constants";
 import ThreadsTab from "@/components/shared/ThreadsTab";
 
-const Profile = async ({ params }: { params: { id: string } }) => {
+const Page = async ({ params }: { params: { id: string } }) => {
     const user = await currentUser();
     if (!user) return null;
 
@@ -56,4 +56,4 @@ const Profile = async ({ params }: { params: { id: string } }) => {
     )
 }
 
-export default Profile;
+export default Page;

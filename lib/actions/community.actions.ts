@@ -66,36 +66,38 @@ export async function fetchCommunityDetails(id: string) {
     }
 }
 
-export async function fetchCommunityPosts(id: string) {
+export async function fetchCommunityPosts(communityId: string) {
     try {
-        connectToDB();
-
-        const communityPosts = await Community.findById(id).populate({
-            path: "threads",
+      connectToDB();
+  
+      const communityPosts = await Community.findOne({id: communityId}).populate({
+        path: "threads",
+        model: Thread,
+        populate: [
+          {
+            path: "author",
+            model: User,
+            select: "name image id", // Select the "name" and "_id" fields from the "User" model
+          },
+          {
+            path: "children",
             model: Thread,
-            populate: [
-                {
-                    path: "author",
-                    model: User,
-                    select: "name image id", // Select the "name" and "_id" fields from the "User" model
-                },
-                {
-                    path: "children",
-                    model: Thread,
-                    populate: {
-                        path: "author",
-                        model: User,
-                        select: "image _id", // Select the "name" and "_id" fields from the "User" model
-                    },
-                },
-            ],
-        });
-
-        return communityPosts;
-    } catch (error: any) {
-        throw new Error(`Error while trying to fetch community posts, ${error.message}`);
+            populate: {
+              path: "author",
+              model: User,
+              select: "image _id", // Select the "name" and "_id" fields from the "User" model
+            },
+          },
+        ],
+      });
+  
+      return communityPosts;
+    } catch (error) {
+      // Handle any errors
+      console.error("Error fetching community posts:", error);
+      throw error;
     }
-}
+  }
 
 export async function fetchCommunities({
     searchString = "",
